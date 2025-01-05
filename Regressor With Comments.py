@@ -20,8 +20,7 @@ dst = pd.read_csv(dataset[0])
 backup_dst = dst
 
 
-#Explore the dataset and transform categorical data in
-#numerical data so it can be fed to a regressor
+#Explore the dataset and transform categorical data into numerical data so it can be fed to a regressor. This could also be done with scikit learn label encoder
 
 #Iterate through the columns of the dataset
 for i in range(len(dst.columns)):
