@@ -8,20 +8,10 @@ from sklearn import svm
 from sklearn import tree
 from sklearn.neural_network import MLPRegressor
 
-
-#Get current directory. Read the CSV dataset as a Pandas Dataframe
-#This works if the dataset is a CSV file located in the same folder as the python file
-
-
-Current_cd = os.getcwd()
-F_list = os.listdir(Current_cd)
-dataset = glob.glob(os.path.join(Current_cd, "*.csv"))
-dst = pd.read_csv(dataset[0])
-backup_dst = dst
-
+#Read the laptop prices csv as a pandas dataframe
+dst = pd.read_csv('laptop_prices.csv')
 
 #Explore the dataset and transform categorical data into numerical data so it can be fed to a regressor. This could also be done with scikit learn label encoder
-
 #Iterate through the columns of the dataset
 for i in range(len(dst.columns)):
     #Create empty dictionaries that will help transforming cathegorical values into numerical values
