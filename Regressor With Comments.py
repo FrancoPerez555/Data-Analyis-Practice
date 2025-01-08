@@ -73,29 +73,30 @@ for i in range(len(X[0,:])):
 #Splitting of the dataset into train and test sets
 X_train, X_test, Y_train, Y_test = train_test_split(X,Y, test_size = 0.3)
 
-#Prediction using support vector machine
-Model = svm.SVR()
-Model.fit(X_train, Y_train)
-Predictions = Model.predict(X_test)
 
-#Prediction using decission tree regressor
-Model2 = tree.DecisionTreeRegressor()
-Model2.fit(X_train, Y_train)
-Predictions_2 = Model2.predict(X_test)
+#Definition of a funtion to fit the data to different models and get the prediction metrics
+def predictor(mod, X_tr, Y_tr, X_ts, Y_ts):
+    model = mod()
+    model.fit(X_tr, Y_tr)
+    results = model.predict(X_ts)
+    model_mse = mean_squared_error(Y_ts, results)
+    model_rmse = np.sqrt(model_mse)
+    model_r2 = r2_score(Y_ts, results)
 
-#Prediction using a multilayered preceptron regressor
-Model3 = MLPRegressor(activation='relu', learning_rate= 'adaptive', learning_rate_init= 0.0006, max_iter=1500)
-Model3.fit(X_train, Y_train)
-Predictions_3 = Model3.predict(X_test)
+    print("{} model used for regression \nThe MSE is:  {}\nThe RMSE is: {}\nThe R2 Score is: {}\n".format(mod, model_mse, model_rmse, model_r2))
 
+    return results, model_mse, model_rmse, model_r2
 
-#The first 50 predictions of all regressors are plotted against the real values
-plt.xlabel("Computer (Index)")
-plt.ylabel("Prices")
-plt.title("Some excersice")
+#In this case, SVR, DecisionTreeRegressor, MLP Repressor and Linear Regression are used without defining hyperparameters (for simplicity)
+svr_pred, svr_mse, svr_rmse, svr_r2 = predictor(SVR, X_train, Y_train, X_test, Y_test)
+tree_pred, tree_mse, tree_rmse, tree_r2 = predictor(DecisionTreeRegressor, X_train, Y_train, X_test, Y_test)
+mlp_pred, mlp_mse, mlp_rmse, mlp_r2 = predictor(MLPRegressor, X_train, Y_train, X_test, Y_test)
+lin_pred, lin_mse, lin_rmse, lin_r2 = predictor(LinearRegression, X_train, Y_train, X_test, Y_test)
 
-
-plt.plot(Y_test[0:20], 'b', Predictions_2[0:20], 'g', Predictions[0:20], 'r', Predictions_3[0:20], 'c')
-plt.legend(["Real values", "Decission Tree Predictions", "SVR Predictions", "Neural Network Regressor"], loc="lower right")
+#The first 25 predictions of each model are plotted against the real values
+plt.plot(Y_test[0:20], 'b', svr_pred[0:20], 'g', tree_pred[0:20], 'r', mlp_pred[0:20], 'c',lin_pred[0:20], 'y')
+plt.title("Predictions VS Real Values")
+plt.ylabel("Price (Euros)")
+plt.xlabel("Test instance")
+plt.legend(["Real values", "SVR Predictions", "Decission Tree Predictions","MLP Predictions", "Linear Regression Prediction"], loc="lower right")
 plt.show()
-
